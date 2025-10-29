@@ -13,12 +13,6 @@ echo '' > $output_file;
 
 for site in $(wp site list --archived=0 --deleted=0 --field=url --allow-root); do
 
-        # Check if the given theme name is active
-        #wp theme is-active "${theme_name}" --allow-root --url="${site}";
-        #
-        # Get the exit code of the previous command.
-        #[ '0' -eq $? ] && uses_theme=true || uses_theme=false;
-
         # Get the WP option current_theme for comparison
         active_theme=$(wp option get current_theme --allow-root --url="${site}");
 
