@@ -125,7 +125,7 @@ for site_url in $(wp site list --spam=1 --field=url); do
 done;
 
 
-# wp-cli with extra flags and targetting one site.
+# wp-cli with extra flags and targeting one site.
 wp_on_site () {
 	wp --skip-themes --url="${site_url}" "$@"
 }
