@@ -3,6 +3,8 @@
 # This script audits all sites in a WordPress Multisite network and provides a count and percentage
 # for every active theme.
 
+source 'source/wp-cli-override.sh';
+
 # Requires 'bc' for floating-point percentage calculation.
 if ! command -v bc &> /dev/null; then
     echo "Error: 'bc' (basic calculator) is not installed."
@@ -14,7 +16,7 @@ fi
 declare -A theme_counts
 
 # Get all site URLs into a bash array (ignores 'Loading...' line)
-mapfile -t sites < <(wp site list --skip-themes --skip-plugins --field=url --deleted=0 --archived=0 --quiet)
+mapfile -t sites < <(wp_skip_all site list --field=url --deleted=0 --archived=0 --quiet)
 
 # Get total site count
 total_sites=${#sites[@]}
@@ -32,7 +34,7 @@ echo "---"
 for s in "${sites[@]}"; do
     # Get the slug of the active theme.
     # '2>/dev/null' suppresses errors from archived/deleted sites.
-    active_theme=$(wp theme list --skip-themes --skip-plugins --status=active --field=name --url="$s" 2>/dev/null)
+    active_theme=$(wp_skip_all theme list --status=active --field=name --url="$s" 2>/dev/null)
 
     # Check if the command was successful and returned a theme name
     if [[ -n "$active_theme" ]]; then
@@ -47,7 +49,7 @@ done
 
 echo
 echo "########################################"
-echo "📊 Theme Usage Report"
+echo " Theme Usage Report"
 echo "########################################"
 
 # Loop through the counted themes and print the report

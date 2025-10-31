@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # Set the exact slug of the plugin you want to check
-PLUGIN_SLUG='classic-editor'
+plugin_slug='classic-editor';
+
+source 'source/wp-cli-override.sh';
 
 # Requires 'bc' for floating-point percentage calculation
 if ! command -v bc &> /dev/null; then
@@ -15,7 +17,7 @@ active_count=0
 failed_sites=0
 
 # Get all site URLs into a bash array (ignores 'Loading...' line)
-mapfile -t sites < <(wp site list --skip-themes --skip-plugins --field=url --quiet)
+mapfile -t sites < <(wp_skip_all site list --field=url --quiet)
 
 # Get total site count
 total_sites=${#sites[@]}
@@ -25,7 +27,7 @@ if [[ $total_sites -eq 0 ]]; then
     exit 0
 fi
 
-echo "Auditing '$PLUGIN_SLUG' plugin status across $total_sites sites..."
+echo "Auditing '$plugin_slug' plugin status across $total_sites sites..."
 echo "---"
 
 # Loop through each site and check plugin status.
@@ -33,7 +35,7 @@ for s in "${sites[@]}"; do
 
     # Check if the plugin is active. Suppress errors for archived/deleted sites.
     # Exits with 0 if active, 1 if inactive/not-installed.
-    wp plugin is-active "$PLUGIN_SLUG"  --skip-themes --skip-plugins --url="$s" >/dev/null 2>&1
+    wp_skip_all plugin is-active "$plugin_slug" --url="$s" >/dev/null 2>&1
     plugin_status=$?
 
     if [[ $plugin_status -eq 0 ]]; then
@@ -65,7 +67,7 @@ fi
 
 echo
 echo "##################################################"
-echo "📊 Plugin Usage Report for: $PLUGIN_SLUG"
+echo " Plugin Usage Report for: $plugin_slug"
 echo "##################################################"
 
 # Print the report
