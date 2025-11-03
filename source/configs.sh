@@ -1,6 +1,6 @@
 # Global configs for these scripts.
 
-config=(
+declare -A config=(
 
 	# The path to the root of your WordPress installation.
 	#

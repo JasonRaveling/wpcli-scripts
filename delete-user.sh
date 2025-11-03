@@ -3,6 +3,8 @@
 # This interactive script deletes a given user by their ID and reattributes their content to another
 # user based on the provided ID.
 
+source 'source/includes.sh';
+
 echo;
 echo 'You are about to delete a user and attribute any content they may have to another use.';
 echo;
@@ -28,22 +30,22 @@ done;
 
 # Prompt for the site ID to delete the user from.
 if [[ 999 = $site_id ]]; then
-	sites=$(wp --allow-root --skip-themes --skip-plugins site list --field="url" --archived=0);
+	sites=$(wp_skip_all site list --field="url" --archived=0);
 	sites_name='All sites in the WP network';
 else
-	sites=$(wp --allow-root --skip-themes --skip-plugins site list --field="url" --site__in=${site_id});
+	sites=$(wp_skip_all site list --field="url" --site__in=${site_id});
 	sites_name="$sites";
 fi
 
 echo;
 
 # Add human readable info for the user to be deleted.
-user_name_delete=$(wp --allow-root --skip-themes --skip-plugins user get ${user_id_delete} --field="display_name");
-# user_login_delete=$(wp --allow-root --skip-themes --skip-plugins user get ${user_id_delete} --field="user_login");
+user_name_delete=$(wp_skip_all user get ${user_id_delete} --field="display_name");
+# user_login_delete=$(wp_skip_all user get ${user_id_delete} --field="user_login");
 
 # Add human readable info for the user to get attribution of content.
-user_name_attribute=$(wp --allow-root --skip-themes --skip-plugins user get ${user_id_attribute} --field="display_name");
-# user_login_attribute=$(wp --allow-root --skip-themes --skip-plugins user get ${user_id_attribute} --field="user_login");
+user_name_attribute=$(wp_skip_all user get ${user_id_attribute} --field="display_name");
+# user_login_attribute=$(wp_skip_all user get ${user_id_attribute} --field="user_login");
 
 # Confirm before moving on.
 while [[ -z "$confirmed" ]]; do
@@ -72,5 +74,5 @@ esac
 # you reattribute content.
 echo 'Removing the user...';
 for site in $sites; do
-	wp --allow-root --skip-themes --skip-plugins user delete $user_id_delete --reassign="${user_id_attribute}" --url="${site}" ;
+	wp_skip_all user delete $user_id_delete --reassign="${user_id_attribute}" --url="${site}" ;
 done;
