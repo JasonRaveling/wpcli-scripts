@@ -3,7 +3,7 @@
 # This script loops through each network site and replace an email contact with another for Gravity
 # Forms notifications.
 
-source 'source/wp-cli-override.sh';
+source 'source/includes.sh';
 
 old_contacts=("some-person@somesite.com");
 new_contact="different-person@anothersite.com";

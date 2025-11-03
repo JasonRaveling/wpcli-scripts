@@ -3,7 +3,7 @@
 # Set the exact slug of the plugin you want to check
 plugin_slug='classic-editor';
 
-source 'source/wp-cli-override.sh';
+source 'source/includes.sh';
 
 # Requires 'bc' for floating-point percentage calculation
 if ! command -v bc &> /dev/null; then

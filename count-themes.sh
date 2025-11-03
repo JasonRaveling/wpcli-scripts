@@ -3,7 +3,7 @@
 # This script audits all sites in a WordPress Multisite network and provides a count and percentage
 # for every active theme.
 
-source 'source/wp-cli-override.sh';
+source 'source/includes.sh';
 
 # Requires 'bc' for floating-point percentage calculation.
 if ! command -v bc &> /dev/null; then

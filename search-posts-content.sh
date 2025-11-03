@@ -19,7 +19,7 @@ echo;
 echo 'Beginning search...';
 
 # Get every network site.
-all_site_ids=$(wp --allow-root --skip-themes --skip-plugins site list --field="blog_id" --archived=0);
+all_site_ids=$(wp_skip_all site list --field="blog_id");
 
 # Loop over every network site.
 for site_id in $all_site_ids; do
@@ -32,10 +32,10 @@ for site_id in $all_site_ids; do
 	echo "Results for Site ID ${site_id}" >> $output_file;
 
 	# Using WP built in search. But "My favorite book" would turn up pages with "my" or "favorite" or "book".
-	#wp post list --skip-themes --skip-plugins --post_type='page' --search="${term}" --fields="${fields}" --format=csv --url="${site}" | awk 'NR>1' >> $output_file;
+	#wp_skip_all post list --post_type='page' --search="${term}" --fields="${fields}" --format=csv --url="${site}" | awk 'NR>1' >> $output_file;
 
 	# Search for multi term phrases. Cases sensitive.
-	wp db query --skip-themes --skip-plugins --skip-column-names "SELECT ${fields} FROM wp_${site_id}_posts WHERE post_content REGEXP '${search_regex}' AND post_status='publish';" >> $output_file;
+	wp_skip_all db query --skip-column-names "SELECT ${fields} FROM wp_${site_id}_posts WHERE post_content REGEXP '${search_regex}' AND post_status='publish';" >> $output_file;
 
 done;
 

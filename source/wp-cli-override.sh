@@ -3,7 +3,7 @@
 
 # Usage of the wp command on the main site. Skips themes and plugins.
 wp_skip_all () {
-	wp --skip-themes --skip-plugins "$@"
+	wp --skip-themes --skip-plugins --path=$config[wp_path] "$@"
 }
 
 
@@ -11,5 +11,5 @@ wp_skip_all () {
 #
 # It expects $site_url to be set. This is useful in a for loop of every site.
 wp_on_site () {
-	wp --skip-themes --url="${site_url}" "$@"
+	wp --skip-themes --path=$config[wp_path] --url="${site_url}" "$@"
 }
