@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/bin/env bash
 #
 # A script for emptying an individual network site and leaving an empty site.
 #
 # NOTE: Some PHP scripts may not like to be loaded via the command line. In some cases you can
 # check if 'cli' === php_sapi_name() and return out of a function. If you see any PHP errors while
 # running this script, you may want to start there.
+
+source 'source/includes.sh';
 
 # Script version
 version='1.0.3';
@@ -30,21 +32,11 @@ if [[ $current_dir =~ "$production_dir" ]]; then
 	echo
 fi
 
-# Make sure that WP-CLI is installed.
-if [[ "$(which wp 2>/dev/null)" == "" ]]; then
-	echo
-	echo "The WP-CLI command line interface could not be found. It is required for this script to run."
-	echo
-	echo "Visit https://wp-cli.org/ to get WP-CLI."
-	echo
-	exit
-fi
-
 while [[ -z $site_id ]]; do
 	read -p "Please provide the Site ID: " site_id;
 done;
 
-site_url="$(wp db query "SELECT option_value FROM wp_${site_id}_options WHERE option_name = 'siteurl'" --skip-themes --skip-plugins --allow-root --skip-column-names)";
+site_url="$(wp_skip_all db query "SELECT option_value FROM wp_${site_id}_options WHERE option_name = 'siteurl'" --skip-column-names)";
 site_url="${site_url}/";
 
 if [[ -z $site_url ]]; then
@@ -110,13 +102,13 @@ site_options_exclude_regex=${site_options_exclude_regex::-1} # remove the last p
 # Destroy the individual site.
 ###################################################################################################
 
-wp --allow-root maintenance-mode activate
+wp_skip_all maintenance-mode activate
 
 echo "Destroying site ID: ${site_id}"
 
-# wp-cli with extra flags and targetting one site.
+# wp-cli with extra flags and targeting one site.
 wp_on_site () {
-	wp --allow-root --url="${site_url}" "$@"
+	wp_skip_all --url="${site_url}" "$@"
 }
 
 echo
@@ -193,10 +185,10 @@ wp_on_site rewrite structure '/%year%/%monthnum%/%day%/%postname%/'
 # Final Cleanup
 ###################################################################################################
 
-wp --allow-root maintenance-mode deactivate
+wp_skip_all maintenance-mode deactivate
 
 # Run wp-cron now that all of these changes were made.
-home_page_url=$(wp site list --allow-root --field="url" | head -n 1)
+home_page_url=$(wp_skip_all site list --field="url" | head -n 1)
 echo "Running wp-cron.php for the first time. (${home_page_url}wp-cron.php)"
 curl -s "${home_page_url}wp-cron.php" -o /dev/null
 

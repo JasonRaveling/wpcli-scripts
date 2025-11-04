@@ -1,14 +1,16 @@
-#!/bin/sh
+#!/bin/env bash
 
 # Loop through each network site and delete a transient.
-
+#
 # The transient to search for (can use wild cards *).
 transient_search_term='*events_*';
 
-echo;
-for site_url in $(wp site list --allow-root --skip-themes --skip-plugins --deleted=0 --archived=0 --spam=0 --field=url); do
+source 'source/includes.sh';
 
-	found_transients=$(wp transient list --allow-root --skip-themes --skip-plugins --format=csv --fields=name --search=$transient_search_term --url=$site_url | awk 'NR>1 {print}'
+echo;
+for site_url in $(wp_skip_all site list --field=url); do
+
+	found_transients=$(wp_skip_all transient list --format=csv --fields=name --search=$transient_search_term --url=$site_url | awk 'NR>1 {print}'
 );
 
 	echo '################################################'
@@ -18,12 +20,10 @@ for site_url in $(wp site list --allow-root --skip-themes --skip-plugins --delet
 
 	# Check if it is NOT empty.
 	if [[ -z $found_transients ]]; then
-	    echo 'none';
+	    echo '    none';
 	else
-		echo $found_transients;
+		echo "    $found_transients";
 	fi
-
-	echo;
 
 	for transient in $found_transients; do
 
