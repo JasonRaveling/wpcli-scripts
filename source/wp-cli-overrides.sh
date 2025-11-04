@@ -14,5 +14,5 @@ wp_skip_all () {
 #
 # It expects $site_url to be set. This is useful in a for loop of every site.
 wp_on_site () {
-	wp --skip-themes --path="${config[wp_path]}" --url="${site_url}" "$@"
+	wp --skip-themes --skip-plugins --path="${config[wp_path]}" --url="${site_url}" "$@"
 }
