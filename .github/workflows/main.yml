@@ -1,0 +1,28 @@
+name: Lint Pull Request
+on:
+  pull_request:
+    types: [opened, edited]
+    branches: [ main ]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        
+      - name: Run ShellCheck
+        uses: reviewdog/action-shellcheck@v1
+        with:
+          # This token is required to post comments to pull requests.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Use 'github-pr-review' to post annotations directly on the PR.
+          # Use 'github-check' to report results as a check.
+          reporter: github-pr-review
+          
+          # This is the minimum severity level to report.
+          # Options: info, warning, error
+          level: warning
