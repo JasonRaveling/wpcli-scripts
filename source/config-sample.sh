@@ -1,5 +1,12 @@
-# Global configs for these scripts.
+# Rename this file to `config.sh` and modify as needed.
 
+# Global configs for these scripts.
+#
+# No shebang needed as this is an include.
+# shellcheck disable=SC2148
+
+# Disable unused error since this file is included in other files.
+# shellcheck disable=SC2034
 declare -A config=(
 
 	# The path to the root of your WordPress installation.

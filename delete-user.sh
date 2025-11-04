@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # This interactive script deletes a given user by their ID and reattributes their content to another
 # user based on the provided ID.

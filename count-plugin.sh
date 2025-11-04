@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # Set the exact slug of the plugin you want to check
 plugin_slug='classic-editor';

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # This script audits all sites in a WordPress Multisite network and provides a count and percentage
 # for every active theme.

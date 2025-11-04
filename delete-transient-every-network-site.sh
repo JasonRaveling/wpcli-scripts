@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # Loop through each network site and delete a transient.
 #

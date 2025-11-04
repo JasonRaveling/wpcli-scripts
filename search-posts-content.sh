@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/bin/env bash
 
 # Search post content for every post on every network site. Return as 
 # a CSV with ID, post_title, and url.
 
+source 'source/includes.sh';
+
 # The text to search for.
-search_regex='find this in content';
+search_regex='some text';
 
 # A comma separated list of fields to return.
 fields='ID,post_title,guid';

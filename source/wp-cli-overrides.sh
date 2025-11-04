@@ -1,5 +1,8 @@
 # Overrides the default wp command for more readable scripts and more flexible modification of
 # the scripts usage of the wp command.
+#
+# No shebang needed as this is an include.
+# shellcheck disable=SC2148
 
 # Usage of the wp command on the main site. Skips themes and plugins.
 wp_skip_all () {
