@@ -48,8 +48,8 @@ user_count=0;
 # Loop over the entire CSV file.
 while IFS="," read -r username email role superadmin; do
 
-	# Create the user.
-	if wp_skip_all user create --porcelain "$username" "$email" --role="$role" > /dev/null; then
+	# Create the user. Only output WPCLI success message on successful creation.
+	if new_user_id=$(wp_skip_all user create --porcelain "$username" "$email" --role="$role" >&1 ); then
 
 		# Update the count for each successful user creation.
 		((user_count++));
@@ -61,10 +61,20 @@ while IFS="," read -r username email role superadmin; do
 
 			wp_skip_all super-admin add $username;
 
+		else
+
+			for site_url in $(wp_skip_all site list --field="url" --archived=0 --deleted=0 --spam=0); do
+
+				# The user is not a superadmin so add them to each site individually.
+				wp_on_site user set-role "$new_user_id" "$role";
+
+			done;
+
 		fi
 
 	else
 
+		# Output any errors from WPCLI.
 		>&2
 
 	fi
