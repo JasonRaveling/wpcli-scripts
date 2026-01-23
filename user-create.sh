@@ -11,7 +11,7 @@
 source 'source/includes.sh';
 
 # Check if this is a multisite/network installation of WordPress.
-is_multisite=$(wp config get MULTISITE);
+is_multisite=$(wp_skip_all config get MULTISITE);
 
 echo;
 
@@ -31,7 +31,7 @@ read -r -p 'Path to CSV file with users [./user-create.csv]: ' csv_path;
 [[ -z "$csv_path" ]] && csv_path='./user-create.csv';
 
 # Ensure the file actually exists.
-[[ ! -f "$csv_path" ]]; then
+if [[ ! -f "$csv_path" ]]; then
 
 	echo "The file you provided does not exist: ${csv_path}";
 	exit 1;
@@ -49,17 +49,25 @@ user_count=0;
 while IFS="," read -r username email role superadmin; do
 
 	# Create the user.
-	new_user_id=$(wp_skip_all user create --porcelain "$username" "$email" --role="$role");
+	if wp_skip_all user create --porcelain "$username" "$email" --role="$role" > /dev/null; then
 
-	# Check if the user should be a superadmin.
-	if [[ "1" == "$superadmin" ]]; then
+		# Update the count for each successful user creation.
+		((user_count++));
 
-		wp super-admin add $username;
+		echo "'$username' was successfully created.";
+
+		# Check if the user should be a superadmin.
+		if [[ "1" == "$superadmin" ]]; then
+
+			wp_skip_all super-admin add $username;
+
+		fi
+
+	else
+
+		>&2
 
 	fi
-
-	# Update the count for each successful user creation.
-	[[ new_user_id > 0 ]] && ((user_count++));
 
 done < "$csv_path"
 
