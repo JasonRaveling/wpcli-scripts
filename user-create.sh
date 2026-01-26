@@ -74,7 +74,7 @@ while IFS="," read -r username email role superadmin; do
 
 	else
 
-		# Output any errors from WPCLI.
+		# Output any errors from WPCLI for the user creation.
 		>&2
 
 	fi
