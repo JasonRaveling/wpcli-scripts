@@ -27,12 +27,6 @@ for site_id in $all_site_ids; do
 		continue;
 	fi
 
-	echo >> $output_file;
-	echo "Results for Site ID ${site_id}" >> $output_file;
-
-	# Search for multi term phrases. Cases sensitive.
-	wp_skip_all db query --skip-column-names "SELECT ${fields} FROM wp_${site_id}_posts WHERE post_type = 'attachment' AND post_REGEXP '${search_regex}';" >> $output_file;
-
 	# The SQL query for searching the media library of a network site.
 	sql_query="SELECT
 		$site_id as site_id,
@@ -50,10 +44,10 @@ for site_id in $all_site_ids; do
 
 	# Check if a search string was provided.
 	if [ -n "$search_regex" ]; then
-		QUERY="$QUERY AND p.post_title REGEXP '${search_regex}'"
+		sql_query="$sql_query AND p.post_title REGEXP '${search_regex}'"
 	fi
 
-	wp_skip_all db query --skip-column-names "SELECT ${fields} FROM wp_${site_id}_posts WHERE post_type = 'attachment' AND post_REGEXP '${search_regex}';" tee -a $output_file;
+	wp_skip_all db query --skip-column-names "$sql_query" | tee -a $output_file;
 
 done;
 
