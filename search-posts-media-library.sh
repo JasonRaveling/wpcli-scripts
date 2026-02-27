@@ -38,7 +38,7 @@ for site_id in $all_site_ids; do
 	FROM
 		wp_${site_id}_posts p
 	LEFT JOIN
-		wp_3_postmeta pm1 ON (p.ID = pm1.post_id AND pm1.meta_key = '_wp_attached_file')
+		wp_${site_id}_postmeta pm1 ON (p.ID = pm1.post_id AND pm1.meta_key = '_wp_attached_file')
 	WHERE
 		p.post_type = 'attachment'"
 
@@ -47,7 +47,8 @@ for site_id in $all_site_ids; do
 		sql_query="$sql_query AND p.post_title REGEXP '${search_regex}'"
 	fi
 
-	wp_skip_all db query --skip-column-names "$sql_query" | tee -a $output_file;
+	# Run the wpcli command | use sed to replace tabs with commas | output to shell and file.
+	wp_skip_all db query --skip-column-names "$sql_query" | sed -E 's/"/""/g; s/\t/","/g; s/^/"/; s/$/"/' | tee -a $output_file;
 
 done;
 
