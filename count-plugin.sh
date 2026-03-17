@@ -41,10 +41,11 @@ for s in "${sites[@]}"; do
     if [[ $plugin_status -eq 0 ]]; then
         # Status 0: Plugin is ACTIVE
         ((active_count++))
-        echo "Site: $s | ACTIVE"
+        echo -e "Site: $s | \e[42;30m ACTIVE \e[0m"
+
     elif [[ $plugin_status -eq 1 ]]; then
         # Status 1: Plugin is INACTIVE or not installed
-        echo "Site: $s | INACTIVE"
+        echo -e "Site: $s | \e[41;37m INACTIVE \e[0m"
     else
         # Any other status: WP-CLI command failed
         echo "Site: $s | FAILED to get status (site may be archived or deleted)"
