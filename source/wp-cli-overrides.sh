@@ -6,7 +6,30 @@
 
 # Usage of the wp command on the main site. Skips themes and plugins.
 wp_skip_all () {
-	wp --skip-themes --skip-plugins --path="${config[wp_path]}" "$@"
+
+	# Setup the variable for building a wpcli command.
+	local -a cmd=( wp )
+
+	# Add the wpcli command to run and any additional flags that were used.
+	cmd+=( "$@" )
+
+	# Check if a path to a WP installation was provided. If none was provided, wpcli will default to
+	# the current directory.
+	if [[ -n "${config[wp_path]:-}" ]]; then
+		cmd+=( --path="${config[wp_path]}" )
+	fi
+
+	# Check if allow root was set to 1 and add the flag.
+	if (( config[allow_root] )); then
+		cmd+=( --allow-root )
+	fi
+
+	# Add flags to use every time.
+	cmd+=( '--skip-themes --skip-plugins' )
+
+	# Run the command
+	"${cmd[@]}"
+
 }
 
 
@@ -14,5 +37,28 @@ wp_skip_all () {
 #
 # It expects $site_url to be set. This is useful in a for loop of every site.
 wp_on_site () {
-	wp --skip-themes --skip-plugins --path="${config[wp_path]}" --url="${site_url}" "$@"
+
+	# Setup the variable for building a wpcli command.
+	local -a cmd=( wp )
+
+	# Add the wpcli command to run and any additional flags that were used.
+	cmd+=( "$@" )
+
+	# Check if a path to a WP installation was provided. If none was provided, wpcli will default to
+	# the current directory.
+	if [[ -n "${config[wp_path]:-}" ]]; then
+		cmd+=( --path="${config[wp_path]}" )
+	fi
+
+	# Check if allow root was set to 1 and add the flag.
+	if (( config[allow_root] )); then
+		cmd+=( --allow-root )
+	fi
+
+	# Add flags to use every time.
+	cmd+=( --skip-themes --skip-plugins --url="${site_url}" )
+
+	# Run the command
+	"${cmd[@]}"
+
 }

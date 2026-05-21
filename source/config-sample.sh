@@ -14,4 +14,10 @@ declare -A config=(
 	# This is set so that these scripts can live outside of the WordPress installation.
 	[wp_path]='/var/www/public_html/'
 
+	# Whether or not to allow root to run wpcli.
+	#
+	# By default wpcli will display an error and exit if you run it as root. Set this to 1 to enable
+	# running wpcli as root.
+	[allow_root]=0
+
 );
