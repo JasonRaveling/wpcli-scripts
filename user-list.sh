@@ -6,16 +6,16 @@ source 'source/includes.sh';
 
 fields_to_display='user_login,user_email,roles';
 
-log_file='user-list.txt';
+output_file='user-list.txt';
 
-echo '#########################################################' | tee "$log_file";
-echo 'Users by WordPress site' | tee -a "$log_file";
-echo '#########################################################' | tee -a "$log_file";
+echo '#########################################################' | tee "$output_file";
+echo 'Users by WordPress site' | tee -a "$output_file";
+echo '#########################################################' | tee -a "$output_file";
 
 for site_url in $(wp_skip_all site list --field="url" --archived=0 --deleted=0 --spam=0); do
 
-	echo '-------------------------------------------------' | tee -a "$log_file";
-	echo "Site ${site_url}" | tee -a "$log_file";
-	wp_on_site user list --fields="${fields_to_display}" | tee -a "$log_file";
+	echo '-------------------------------------------------' | tee -a "$output_file";
+	echo "Site ${site_url}" | tee -a "$output_file";
+	wp_on_site user list --format=csv --fields="${fields_to_display}" | tee -a "$output_file";
 
 done;
